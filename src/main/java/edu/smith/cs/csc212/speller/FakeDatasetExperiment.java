@@ -1,6 +1,7 @@
 package edu.smith.cs.csc212.speller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
@@ -20,7 +21,8 @@ public class FakeDatasetExperiment {
 	 * @return an incorrectly-spelled word. Maybe you deleted a letter or added one?
 	 */
 	public static String makeFakeWord(String realWord) {
-		throw new RuntimeException("TODO");
+		String fakeWord = realWord.substring(0, realWord.length()-1) + "z" + realWord.substring(realWord.length())+"z";
+		return fakeWord;
 	}
 
 	/**
@@ -37,7 +39,12 @@ public class FakeDatasetExperiment {
 	public static List<String> createMixedDataset(List<String> yesWords, int numSamples, double fractionYes) {
 		// Hint to the ArrayList that it will need to grow to numSamples size:
 		List<String> output = new ArrayList<>(numSamples);
-		// TODO: select numSamples * fractionYes words from yesWords; create the rest as
+		// Select numSamples * fractionYes words from yesWords; create the rest as
+		Collections.shuffle(yesWords);
+		for(int i = 0; i< numSamples-(numSamples*fractionYes); i++) {
+			String fakeWord = makeFakeWord(yesWords.get(i));
+			output.add(i,fakeWord);
+		}
 		// no words.
 		return output;
 	}

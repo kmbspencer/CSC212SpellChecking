@@ -41,7 +41,9 @@ public class CheckSpelling {
 		for (String w : words) {
 			if (dictionary.contains(w)) {
 				found++;
-			}
+			} /**else {
+				System.out.println(w);
+			}**/
 		}
 		
 		long endLookup = System.nanoTime();
@@ -49,6 +51,7 @@ public class CheckSpelling {
 		double timeSpentPerItem = (endLookup - startLookup) / ((double) words.size());
 		int nsPerItem = (int) timeSpentPerItem;
 		System.out.println("  "+dictionary.getClass().getSimpleName()+": Lookup of items found="+fractionFound+" time="+nsPerItem+" ns/item");
+		
 	}
 	
 	/**
@@ -60,24 +63,70 @@ public class CheckSpelling {
 		List<String> listOfWords = loadDictionary();
 		
 		// --- Create a bunch of data structures for testing:
+		long startTreeSetFill = System.nanoTime();
 		TreeSet<String> treeOfWords = new TreeSet<>(listOfWords);
+		/**TreeSet<String> treeOfWords = new TreeSet<>();
+		for(String w :listOfWords) {
+			treeOfWords.add(w);
+		}**/
+		long endTreeSetFill = System.nanoTime();
+		double treeSetFillTime = (endTreeSetFill  - startTreeSetFill) / 1e9;
+		int treeEFill = (int) ((int) ((treeSetFillTime/1e-9)/listOfWords.size()));
+		
+		long startHashSetFill = System.nanoTime();
 		HashSet<String> hashOfWords = new HashSet<>(listOfWords);
+		/**HashSet<String> hashOfWords = new HashSet<>();
+		for(String w :listOfWords) {
+			hashOfWords.add(w);
+		}**/
+		long endHashSetFill = System.nanoTime();
+		double hashSetFillTime = (endHashSetFill  - startHashSetFill) / 1e9;
+		int hashEFill = (int) ((int) ((hashSetFillTime/1e-9)/listOfWords.size()));
+		
+		long startBSLFill = System.nanoTime();
 		SortedStringListSet bsl = new SortedStringListSet(listOfWords);
+		long endBSLFill = System.nanoTime();
+		double bslFillTime = (endBSLFill  - startBSLFill) / 1e9;
+		int bslEFill = (int) ((int) ((bslFillTime/1e-9)/listOfWords.size()));
+		
 		CharTrie trie = new CharTrie();
+		long startTrieFill = System.nanoTime();
 		for (String w : listOfWords) {
 			trie.insert(w);
 		}
-		LLHash hm100k = new LLHash(100000);
+		long endTrieFill = System.nanoTime();
+		double trieFillTime = (endTrieFill  - startTrieFill) / 1e9;
+		int trieEFill = (int) ((int) ((trieFillTime/1e-9)/listOfWords.size()));
+		
+		LLHash hm100k = new LLHash(1000000);
+		long startLLHashFill = System.nanoTime();
 		for (String w : listOfWords) {
 			hm100k.add(w);
 		}
+		long endLLHashFill = System.nanoTime();
+		double llHashFillTime = (endLLHashFill  - startLLHashFill) / 1e9;
+		int llhashEFill = (int) ((int) ((llHashFillTime/1e-9)/listOfWords.size()));
 		
 		// --- Make sure that every word in the dictionary is in the dictionary:
 		//     This feels rather silly, but we're outputting timing information!
+		System.out.println("\n  It took "+ treeSetFillTime + " seconds to fill the TreeSet");
+		System.out.println("  That is "+treeEFill + " ns/item");
 		timeLookup(listOfWords, treeOfWords);
+		
+		System.out.println("\n  It took "+ hashSetFillTime + " seconds to fill the HashSet");
+		System.out.println("  That is "+hashEFill + " ns/item");
 		timeLookup(listOfWords, hashOfWords);
+		
+		System.out.println("\n  It took "+ bslFillTime + " seconds to fill the bsl");
+		System.out.println("  That is "+bslEFill + " ns/item");
 		timeLookup(listOfWords, bsl);
+		
+		System.out.println("\n  It took "+ trieFillTime + " seconds to fill the Trie");
+		System.out.println("  That is "+trieEFill + " ns/item");
 		timeLookup(listOfWords, trie);
+		
+		System.out.println("\n  It took "+ llHashFillTime + " seconds to fill the LLHash");
+		System.out.println("  That is "+llhashEFill + " ns/item");
 		timeLookup(listOfWords, hm100k);
 		
 		

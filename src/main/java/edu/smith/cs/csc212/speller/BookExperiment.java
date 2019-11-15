@@ -3,6 +3,7 @@ package edu.smith.cs.csc212.speller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -33,5 +34,8 @@ public class BookExperiment {
 	public static void main(String[] args) {
 		List<String> wordsInFrankenstein = loadTextFileToWords("src/main/resources/frankenstein.txt");
 		System.out.println("Frankenstein contains approximately: "+wordsInFrankenstein.size()+" words.");
+		List<String> listofwords = CheckSpelling.loadDictionary();
+		HashSet<String> h = new HashSet<>(listofwords);
+		CheckSpelling.timeLookup(wordsInFrankenstein, h);
 	}
 }

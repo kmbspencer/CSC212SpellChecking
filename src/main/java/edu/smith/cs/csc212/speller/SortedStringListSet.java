@@ -51,8 +51,41 @@ public class SortedStringListSet extends AbstractSet<String> {
 	 * @return the index found, OR negative if not found.
 	 */
 	private int binarySearch(String query, int start, int end) {
-		// TODO: replace this with your own binary search.
-		return Collections.binarySearch(this.data.subList(start, end), query);
+		
+		int midpoint = (int) Math.floor(start + ((end-start)/2));
+		if(query.compareTo(data.get(midpoint))<0) {
+			binarySearch(query, start, midpoint);
+			
+		} else if(query.compareTo(data.get(midpoint))>0) {
+			binarySearch(query, midpoint, end);
+			
+		} else if(query.compareTo(data.get(midpoint))==0) {
+			return midpoint;
+			
+		} 
+			return -1;
+		
+		/**int low = 0;
+		int high = end -1;
+		
+		while(low<=high) {
+			int mid = low +((low+high)/2);
+			String midVal = data.get(mid);
+			
+			if(midVal.compareTo(query)<0) {
+				low = mid +1;
+			} else if(midVal.compareTo(query)>0) {
+				high = mid-1;
+			}
+			else {
+				return mid;
+			}
+			
+			
+		}
+		return -(low +1);
+		**/
+		//return Collections.binarySearch(this.data.subList(start, end), query);
 	}
 
 	/**
